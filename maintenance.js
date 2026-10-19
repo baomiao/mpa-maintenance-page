@@ -32,6 +32,16 @@
   let previousRemaining = null;
   function setCopy(phase, remaining) {
     if (phase === previousState && remaining === previousRemaining) return;
+    const scheduled = phase === 'before';
+    document.title = `${scheduled ? 'Scheduled maintenance' : 'Under maintenance'} | Marketing Power App`;
+    q('#mpa-state-en').textContent = scheduled ? 'SCHEDULED MAINTENANCE' : 'UNDER MAINTENANCE';
+    q('#mpa-state-zh').textContent = scheduled ? '维护预告' : '维护中';
+    q('#mpa-en-heading').textContent = scheduled
+      ? 'Marketing Power App is scheduled for maintenance and upgrades.'
+      : 'Sorry to inform you that Marketing Power App is under maintenance for upgrades.';
+    q('#mpa-zh-heading').textContent = scheduled
+      ? 'Marketing Power App将按计划进行维护和升级。'
+      : '抱歉的通知您，Marketing Power App正在进行紧急维护和升级。';
     if (phase === 'almost') {
       q('#mpa-en-time').textContent = 'Almost there. Please wait a moment.';
       q('#mpa-zh-time').textContent = '马上好了，请稍候。';
