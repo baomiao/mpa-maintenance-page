@@ -2,7 +2,9 @@
   'use strict';
   const root = document.getElementById('mpa-maintenance-preview');
   const q = selector => root.querySelector(selector);
-  const config = window.MPA_MAINTENANCE_CONFIG || {};
+  let startsAt = NaN;
+  let endsAt = NaN;
+  let configured = false;
 
   // Require explicit Beijing time; reject invalid calendar dates and ambiguous local dates.
   function parseBeijing(value) {
@@ -12,9 +14,6 @@
     return new Date(stamp + 8 * 3600000).toISOString().slice(0, 19) === value.slice(0, 19) ? stamp : NaN;
   }
 
-  const startsAt = parseBeijing(config.startsAt);
-  const endsAt = parseBeijing(config.expectedEndsAt);
-  const configured = Number.isFinite(startsAt) && Number.isFinite(endsAt) && endsAt > startsAt;
   let timeZone = 'Asia/Shanghai';
   try {
     const detected = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -63,11 +62,22 @@
     previousRemaining = remaining;
   }
 
-  if (configured) {
-    q('#mpa-start').dateTime = config.startsAt;
-    q('#mpa-end').dateTime = config.expectedEndsAt;
-    q('#mpa-start').textContent = format.format(startsAt);
-    q('#mpa-end').textContent = format.format(endsAt);
+  function applyConfig(config) {
+    if (!config || typeof config !== 'object' || Array.isArray(config)) return;
+    const nextStart = parseBeijing(config.startsAt);
+    const nextEnd = parseBeijing(config.expectedEndsAt);
+    const cleared = config.startsAt === null && config.expectedEndsAt === null;
+    const valid = Number.isFinite(nextStart) && Number.isFinite(nextEnd) && nextEnd > nextStart;
+    // Ignore partial or invalid updates; two explicit nulls intentionally clear the schedule.
+    if (!valid && !cleared) return;
+    startsAt = nextStart;
+    endsAt = nextEnd;
+    configured = valid;
+    q('#mpa-start').dateTime = valid ? config.startsAt : '';
+    q('#mpa-end').dateTime = valid ? config.expectedEndsAt : '';
+    q('#mpa-start').textContent = valid ? format.format(startsAt) : '';
+    q('#mpa-end').textContent = valid ? format.format(endsAt) : '';
+    update();
   }
 
   function update() {
@@ -75,6 +85,7 @@
     if (!configured) {
       setCopy('unknown', null);
       root.dataset.phase = 'unknown';
+      delete root.dataset.progress;
       return;
     }
     // Use wall-clock timestamps on every update: refresh and background tabs cannot reset progress.
@@ -93,10 +104,42 @@
     root.dataset.progress = String(percent);
   }
 
-  update();
-  if (configured) {
-    window.setInterval(update, 1000);
-    document.addEventListener('visibilitychange', update);
-    window.addEventListener('pageshow', update);
+  let refreshing = false;
+  async function refreshConfig() {
+    // file:// remains usable with the initial script configuration, without failed fetches.
+    if (!/^https?:$/.test(window.location.protocol) || refreshing) return;
+    refreshing = true;
+    const controller = new AbortController();
+    const timeout = window.setTimeout(() => controller.abort(), 10000);
+    try {
+      const url = new URL('maintenance-config.js', window.location.href);
+      url.searchParams.set('_refresh', String(Date.now()));
+      const response = await fetch(url, { cache: 'no-store', credentials: 'omit', signal: controller.signal });
+      if (!response.ok) return;
+      const text = await response.text();
+      // Parse only our JSON data wrapper. Never execute downloaded JavaScript (eval/script injection).
+      const match = text.match(/^\s*(?:\/\*[\s\S]*?\*\/\s*)?window\.MPA_MAINTENANCE_CONFIG\s*=\s*Object\.freeze\(([\s\S]*)\);\s*$/);
+      if (match && !controller.signal.aborted) applyConfig(JSON.parse(match[1]));
+    } catch {
+      // Network, timeout and parse failures are silent; keep the last valid schedule and retry later.
+    } finally {
+      window.clearTimeout(timeout);
+      refreshing = false;
+    }
   }
+
+  applyConfig(window.MPA_MAINTENANCE_CONFIG);
+  update();
+  window.setInterval(update, 1000);
+  window.setInterval(refreshConfig, 60000);
+  document.addEventListener('visibilitychange', () => {
+    update();
+    if (!document.hidden) refreshConfig();
+  });
+  window.addEventListener('pageshow', event => {
+    update();
+    if (event.persisted) refreshConfig();
+  });
+  window.addEventListener('online', refreshConfig);
+  refreshConfig();
 })();
