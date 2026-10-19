@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Marketing Power App maintenance and upgrade notice.">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="referrer" content="no-referrer">
+  <meta name="color-scheme" content="light">
+  <title>Under maintenance | Marketing Power App</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="styles.css">
+  <script src="maintenance-config.js" defer></script>
+  <script src="maintenance.js" defer></script>
+  <script src="illustration.js" defer></script>
+</head>
+<body>
+<div id="mpa-maintenance-preview">
+  <div class="mpa-page">
+    <header class="mpa-header">
+      <div class="mpa-brand"><span class="mpa-lenovo">Lenovo</span><span class="mpa-brand-divider" aria-hidden="true"></span><span class="mpa-name">Marketing Power App</span></div>
+      <span class="mpa-header-note">SERVICE NOTICE</span>
+    </header>
+    <main class="mpa-main">
+      <div class="mpa-content">
+      <div class="mpa-state"><span class="mpa-dot" aria-hidden="true"></span> UNDER MAINTENANCE <span class="mpa-state-divider" aria-hidden="true">/</span> <span lang="zh-CN">维护中</span></div>
+      <canvas id="maintenance-scene" role="img" aria-label="Animated construction scene with a crane, laptop, phone and concrete mixer truck.">Marketing Power App maintenance illustration</canvas>
+      <div class="mpa-copy">
+        <h1>Sorry to inform you that Marketing Power App is under maintenance for upgrades.</h1>
+        <p id="mpa-en-time" class="mpa-time">Expected completion time to be confirmed.</p>
+        <div class="mpa-chinese" lang="zh-CN"><p>抱歉的通知您，Marketing Power App正在进行紧急维护和升级。</p><p id="mpa-zh-time" class="mpa-time">预计完成时间待确认。</p></div>
+      </div>
+      <section id="mpa-progress-area" class="mpa-progress-area" aria-label="Estimated maintenance progress" hidden>
+        <div class="mpa-progress-label"><span>Estimated progress <span class="mpa-sub" lang="zh-CN">/ 预计发布进度</span></span><strong id="mpa-percent">0%</strong></div>
+        <div id="mpa-meter" class="mpa-track" role="progressbar" aria-label="Estimated time-based progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="mpa-fill" class="mpa-fill"></div></div>
+        <div class="mpa-times"><span><time id="mpa-start"></time><span id="mpa-start-label">Started / 开始</span></span><span><time id="mpa-end"></time><span>Expected / 预计完成</span></span></div>
+      </section>
+      <div class="mpa-actions"><a id="mpa-retry" class="mpa-retry" href="https://mpa.lenovo.com/" target="_top"><span class="retry-icon" aria-hidden="true">↻</span>Try again / <span lang="zh-CN">重试</span></a></div>
+      <p id="mpa-announcement" class="visually-hidden" role="status" aria-live="polite" aria-atomic="true"></p>
+      <noscript><p class="mpa-no-script">Enable JavaScript to see the estimated time and progress.<br><span lang="zh-CN">启用 JavaScript 后可查看预计时间和进度。</span></p></noscript>
+      </div>
+    </main>
+    <footer class="mpa-footer"><span>Marketing Power App</span><span>Thank you for your patience. / <span lang="zh-CN">感谢您的耐心等待。</span></span></footer>
+  </div>
+</div>
+</body>
+</html>
