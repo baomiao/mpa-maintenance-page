@@ -6,5 +6,5 @@
  */
 window.MPA_MAINTENANCE_CONFIG = Object.freeze({
   "startsAt": "2026-11-03T02:33:01+08:00",
-  "expectedEndsAt": "2026-11-03T06:00:00+08:00"
+  "expectedEndsAt": "2026-11-03T10:00:00+08:00"
 });
