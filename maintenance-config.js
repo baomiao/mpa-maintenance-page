@@ -5,6 +5,6 @@
  * Hosted pages re-read this file every 60 seconds; publish changes to update existing visitors.
  */
 window.MPA_MAINTENANCE_CONFIG = Object.freeze({
-  "startsAt": "2026-11-23T02:39:43+08:00",
-  "expectedEndsAt": "2026-11-23T04:00:00+08:00"
+  "startsAt": "2026-11-23T03:12:33+08:00",
+  "expectedEndsAt": "2026-11-23T05:00:00+08:00"
 });
